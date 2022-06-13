@@ -1,8 +1,7 @@
-
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
-
+import 'package:share_plus/share_plus.dart';
 
 class NavigationDrawerWidget extends StatefulWidget {
   // ignore: prefer_const_constructors_in_immutables
@@ -13,84 +12,111 @@ class NavigationDrawerWidget extends StatefulWidget {
 }
 
 class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
-  
-
-
+  bool isSwitched = true;
 
   @override
   Widget build(BuildContext context) {
-    return Align(alignment: Alignment.topLeft,
-     
-        child: SizedBox(
-          height: 680,
-          child: Drawer(
-            child: Container(
-               decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-             Color.fromARGB(255, 8, 216, 199),
-            Color.fromARGB(255, 151, 216, 230),
-            Color.fromARGB(255, 5, 129, 112),
-          ],
-          tileMode: TileMode.clamp,
-        ),
-      ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: Column(children: [
-                  const Text(
-                    'Settings',
-                    style:  TextStyle(fontSize: 30),
-                  ),
-                  const Divider(
-                    thickness: 3,
-                  ),
-                 
-                  
-                  ListTile(
-                    leading: const Icon(Icons.feedback),
-                    title: const Text("Feedback"),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.lock_sharp),
-                    title: const Text("Privacy & Policy"),
-                    onTap: () {},
-                    
-                  ),
-                    ListTile(
-                    leading: const Icon(Icons.info),
-                    title: const Text("About"),
-                    onTap: () {},
-                    
-                  ),
-                    ListTile(
-                    leading: const Icon(Icons.share_sharp),
-                    title: const Text("Share"),
-                    onTap: () {},
-                    
-                  ),
-                   ListTile(
-                    leading: const Icon(Icons.notifications),
-                    title: const Text("Notification"),
-                    trailing: const Icon(Icons.toggle_on,color: Colors.blue,),
-                    onTap: () {},
-                    
-                  ),
-                  const Spacer(),
-                  const Text('verssion'),
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Text('1.0.0'),
-                  ),
-                ]),
+    return Align(
+      alignment: Alignment.topLeft,
+      child: SizedBox(
+        child: Drawer(
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color.fromARGB(255, 8, 216, 199),
+                  Color.fromARGB(255, 151, 216, 230),
+                  Color.fromARGB(255, 5, 129, 112),
+                ],
+                tileMode: TileMode.clamp,
               ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Column(children: [
+                ListTile(
+                  leading: Image.asset("assets/image/logo.png"),
+                  title: const Text(
+                    'Soulmix',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 35),
+                  ),
+                ),
+                const Divider(
+                  thickness: 3,
+                ),
+                ListTile(
+                  leading: const Icon(Icons.share_sharp),
+                  title: const Text("Share"),
+                  onTap: () {
+                    Share.share("Share the App");
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.notifications),
+                  title: const Text("Notification"),
+                  trailing: Switch(
+                    value: isSwitched,
+                    onChanged: toogleSwitch,
+                    activeColor: Colors.green,
+                    inactiveThumbColor: Colors.red,
+                  ),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: const Icon(Icons.info),
+                  title: const Text("About"),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: const Icon(Icons.privacy_tip_outlined),
+                  title: const Text("Privacy Policy"),
+                  onTap: () {},
+                ),
+                ListTile(
+                  leading: const Icon(Icons.verified_user_outlined),
+                  title: const Text("Terms & Conditions"),
+                  onTap: () {},
+                ),
+                const Spacer(),
+                const Text('verssion'),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Text('1.0.0'),
+                ),
+              ]),
             ),
           ),
         ),
-      );
-    
+      ),
+    );
+  }
+
+  void toogleSwitch(bool value) {
+    if (isSwitched == false) {
+      setState(() {
+        isSwitched = true;
+
+        const SnackBar(
+          content: const Text(" notification"),
+          duration: const Duration(microseconds: 600),
+          backgroundColor: Colors.green,
+        );
+      });
+    } else {
+      setState(() {
+        isSwitched = false;
+
+        const SnackBar(
+          content: const Text(" notification"),
+          duration: const Duration(microseconds: 600),
+          backgroundColor: Colors.red,
+        );
+      });
+    }
   }
 }

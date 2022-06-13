@@ -1,10 +1,9 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
-import 'package:music_player1/model/model.dart';
-import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:music_player1/widgets/Home.dart';
 
+import 'package:music_player1/model/model.dart';
+import 'package:music_player1/widgets/Home.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class SlpashHome extends StatefulWidget {
@@ -25,15 +24,6 @@ List<Songs> mappedSongs = [];
 Set<String> gotPathset = {};
 List<String> gotPath = [];
 
-// final Box<List<dynamic>> box = StorageBox.getInstance();
-// final OnAudioQuery audioQuery = OnAudioQuery();
-// final AssetsAudioPlayer player =AssetsAudioPlayer.withId('0');
-
-// List<SongModel> fullSongs = [];
-// List<Audio> songDetails = [];
-// List<Songs>mappedSongs = [];
-// List<Songs>dbsongs = [];
-
 class _SlpashHomeState extends State<SlpashHome> {
   @override
   void initState() {
@@ -42,35 +32,41 @@ class _SlpashHomeState extends State<SlpashHome> {
     super.initState();
   }
 
+  //permission-----------------------------------------------
+
   requestStoragePermission() async {
     bool permissionStatus = await audioQuery.permissionsStatus();
     if (!permissionStatus) {
       await audioQuery.permissionsRequest();
     }
     setState(() {});
-
+//song fetched--------------------------------------------------
     fetchedSongs = await audioQuery.querySongs();
-
+//extention----------------------------------------------------------
     for (var element in fetchedSongs) {
       if (element.fileExtension == "mp3") {
         allSongs.add(element);
       }
     }
 
+//on audioqurt to db-----------------------------------------------
     mappedSongs = allSongs
         .map(
           (audio) => Songs(
               songname: audio.title,
               artist: audio.artist,
-              songurl: audio.uri,
-              duration: audio.duration,
-              id: audio.id),
+              songurl: audio.uri.toString(),
+              duration: audio.duration!.toInt(),
+              id: audio.id,
+              album: audio.album),
         )
         .toList();
-
+//put and get------------------------------------------------------
     await box.put("musics", mappedSongs);
+
     dbSongs = box.get("musics") as List<Songs>;
 
+//db to asset audio------------------------------------------------
     for (var element in dbSongs) {
       fullSongs.add(
         Audio.file(
@@ -78,7 +74,8 @@ class _SlpashHomeState extends State<SlpashHome> {
           metas: Metas(
               title: element.songname,
               id: element.id.toString(),
-              artist: element.artist),
+              artist: element.artist,
+              album: element.album),
         ),
       );
     }
@@ -87,8 +84,7 @@ class _SlpashHomeState extends State<SlpashHome> {
 
   @override
   Widget build(BuildContext context) {
-   return Container(
-     
+    return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -103,20 +99,50 @@ class _SlpashHomeState extends State<SlpashHome> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(
-          child:  Lottie.network(
-                'https://assets2.lottiefiles.com/packages/lf20_li0pgakp.json',
-                height: 70),
-              
-        
-          ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  DelayedDisplay(
+                    delay: const Duration(seconds: 2),
+                    child: Image.asset(
+                      "assets/image/logo.png",
+                      height: 150,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 70,
+                  ),
+                  const DelayedDisplay(
+                    slidingBeginOffset: Offset(0.0, 0.35),
+                    slidingCurve: Curves.easeInCirc,
+                    fadeIn: true,
+                    delay: Duration(seconds: 3),
+                    child: Text(
+                      "SoulMix..🎼",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 35.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      );
-    
+      ),
+    );
   }
 
   Future<void> gotoHome() async {
-    await Future.delayed(Duration(seconds: 4));
+    await Future.delayed(
+      const Duration(seconds: 5),
+    );
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (ctx) => HomeScreen(),
@@ -124,119 +150,3 @@ class _SlpashHomeState extends State<SlpashHome> {
     );
   }
 }
-
-//   void initState() {
-//     storagePermission();
-//   gotoHome();
-//     super.initState();
-//   }
-
-// final OnAudioQuery audioQuery = OnAudioQuery();
-// final box = Songbox.getInstance();
-
-//   storagePermission() async {
-//     bool permissionstatus = await audioQuery.permissionsStatus();
-//     if (!permissionstatus){
-//       await audioQuery.permissionsRequest();
-//     }
-//     setState(() {});
-
-//      fetchedSongs = await audioQuery.querySongs();
-
-//      for (var element in fetchedSongs){
-//        if(element.fileExtension=="mp3"){
-//          allSongs.add(element);
-//        }
-//      }
-
-
-//     mappedSongs = allSongs
-//         .map(
-//           (audio) => Songmodel(
-//               songname: audio.title,
-//               artist: audio.artist,
-//               songurl: audio.uri,
-//               duration: audio.duration,
-//               id: audio.id),
-//         )
-//         .toList();
-    
-//       await box.put("musics", mappedSongs);
-//     dbSongs = box.get("musics") as List<Songmodel>;
-
-//    for (var element in dbSongs) {
-//       fullSongs.add(
-//         Audio.file(
-//           element.songurl.toString(),
-//           metas: Metas(
-//               title: element.songname,
-//               id: element.id.toString(),
-//               artist: element.artist),
-//         ),
-//       );
-//     }
-  //===============================================
-    //  fullSongs = await audioQuery.querySongs();
-    //  mappedSongs = fullSongs
-    //  .map((audio) => Songs(
-    //    artist: audio.artist,
-    //     duration: audio.duration,
-    //     id:audio.id, 
-    //     songname: audio.title, 
-    //     songurl:audio.uri))
-    //     .toList();
-
-       
-
-        // for (var i in dbsongs){
-        //   songDetails.add(
-        //     Audio.file(
-        //       i.songurl.toString(),
-        //       metas: Metas(
-        //         title: i.songname,
-        //         id: i.id.toString(),
-        //         artist: i.artist,
-
-        //       )
-        //     )
-        //   );
-        // }
-      
-  
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Container(
-  //     decoration: const BoxDecoration(
-  //       gradient: LinearGradient(
-  //         begin: Alignment.topCenter,
-  //         end: Alignment.bottomCenter,
-  //         colors: [
-  //            Color.fromARGB(255, 8, 216, 199),
-  //           Color.fromARGB(255, 151, 216, 230),
-  //           Color.fromARGB(255, 5, 129, 112),
-  //         ],
-  //         tileMode: TileMode.clamp,
-  //       ),
-  //     ),
-  //     child: Scaffold(
-  //       backgroundColor: Colors.transparent,
-  //       body: Center(
-  //         child: Image.asset(
-  //           "assets/image/logo.png",
-  //         height: 70,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Future<void> gotoHome() async {
-  //   await Future.delayed(Duration(seconds: 2));
-  //   Navigator.of(context).pushReplacement(
-  //     MaterialPageRoute(
-  //       builder: (ctx) => HomeScreen(),
-  //     ),
-  //   );
-  // }
-

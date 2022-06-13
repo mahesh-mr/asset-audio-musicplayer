@@ -1,9 +1,12 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 class OpenPlayer {
   List<Audio> fullSongs;
   int index;
   bool? notify;
+
   final String songId;
 
   OpenPlayer({
@@ -22,9 +25,10 @@ class OpenPlayer {
         stopEnabled: false,
       ),
       autoStart: true,
-      loopMode: LoopMode.playlist,
+      loopMode: LoopMode.single,
       headPhoneStrategy: HeadPhoneStrategy.pauseOnUnplug,
       playInBackground: PlayInBackground.enabled,
+      volume: 100,
     );
   }
 }

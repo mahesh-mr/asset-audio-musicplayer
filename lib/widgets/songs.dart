@@ -1,24 +1,21 @@
 import 'dart:ui';
-import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:music_player1/factory/openplayer.dart';
+import 'package:marquee/marquee.dart';
+import 'package:music_player1/widgets/players/openplayer.dart';
 import 'package:music_player1/model/model.dart';
-import 'package:music_player1/widgets/Home.dart';
-import 'package:music_player1/widgets/miniplayer.dart';
+import 'package:music_player1/widgets/favourites/favurateIcon.dart';
+import 'package:music_player1/widgets/players/miniplayer.dart';
 import 'package:music_player1/widgets/Drawer.dart';
+import 'package:music_player1/widgets/playlist/crateplaylist/createplaylist.dart';
 import 'package:music_player1/widgets/search.dart';
 import 'package:music_player1/widgets/splash.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'search.dart';
 
 class SongsList extends StatefulWidget {
-
- 
-  SongsList({Key? key,}) : super(key: key);
-
- 
+  const SongsList({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<SongsList> createState() => _SongsListState();
@@ -28,87 +25,62 @@ class _SongsListState extends State<SongsList> {
   final OnAudioQuery audioQuery = OnAudioQuery();
   final box = Songbox.getInstance();
 
- 
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  // final AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
-  // Audio find(List<Audio> source, String fromPath) {
-  //   return source.firstWhere((element) => element.path == fromPath);
-  // }
+  @override
+  void initState() => super.initState();
 
   @override
   Widget build(BuildContext context) {
-   
-
-   
-
     return Scaffold(
-      drawer: NavigationDrawerWidget(),
-      bottomSheet: miniplayer(),
-      // drawer: NavigationDrawerWidget(),
-      backgroundColor: Colors.transparent,
-
-      //====================Mini_Player====================//
-
-      // bottomSheet: miniplayer(),
-      //====================Appbar====================//
-
-      appBar: AppBar(
-        elevation: 0,
-        title: const Text(
-          'Home',
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => search(fullSongs:fullSongs)));
-              },
-              icon: const Icon(
-                Icons.search,
-                // size: 35,
-                color: Colors.white,
+        drawer: NavigationDrawerWidget(),
+        bottomSheet: const Miniplayer(),
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          elevation: 0,
+          title: const Text(
+            'Songs ',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: IconButton(
+                onPressed: () {
+                  showSearch(context: context, delegate: MySearch());
+                },
+                icon: const Icon(
+                  Icons.search,
+                  // size: 35,
+                  color: Colors.white,
+                ),
               ),
             ),
-          ),
-        ],
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-      ),
+          ],
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+        ),
 
-      //====================Song_List_Internal====================//
+        //====================Song_List_Internal====================//
 
-      body: FutureBuilder<List<SongModel>>(
-          future: audioQuery.querySongs(
-            sortType: null,
-            orderType: OrderType.ASC_OR_SMALLER,
-            uriType: UriType.EXTERNAL,
-            ignoreCase: true,
-          ),
-          builder: (context, item) {
-            if (item.data == null) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (item.data!.isEmpty) {
-              return const Center(
-                child: const Text(
-                  'No songs found',
-                ),
-              );
-            }
-
-            return ValueListenableBuilder(
-                valueListenable: box.listenable(),
-            builder: (
-              (context, value, child) => 
-                 ListView.builder(
+        body: FutureBuilder<List<SongModel>>(
+            future: audioQuery.querySongs(
+                sortType: SongSortType.ALBUM,
+                orderType: OrderType.ASC_OR_SMALLER,
+                uriType: UriType.EXTERNAL,
+                ignoreCase: true),
+            builder: (context, item) {
+              if (item.data == null) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (item.data!.isEmpty) {
+                return const Center(
+                  child: Text('No Songs Found'),
+                );
+              }
+              return RefreshIndicator(
+                onRefresh: requestStoragePermission,
+                child: ListView.builder(
                   itemBuilder: (context, index) => Padding(
                     padding:
                         const EdgeInsets.only(left: 10, right: 10, bottom: 5),
@@ -135,26 +107,23 @@ class _SongsListState extends State<SongsList> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
-                                  visualDensity: const VisualDensity(vertical: -3),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -2),
                                   onTap: (() async {
-                                    final songid = 
-                                        fullSongs[index].metas.id
-                                        .toString();
+                                    final songid =
+                                        fullSongs[index].metas.id.toString();
                                     await OpenPlayer(
                                             fullSongs: [],
                                             index: index,
                                             songId: songid)
                                         .openAssetPlayer(
-                                            index: index,
-                                            songs:fullSongs);
-                                  }
-                                  ),
+                                            index: index, songs: fullSongs);
+                                  }),
                                   //==============
                                   leading: QueryArtworkWidget(
                                     artworkFit: BoxFit.cover,
                                     id: int.parse(
-                                       fullSongs[index].metas.id
-                                        .toString()),
+                                        fullSongs[index].metas.id.toString()),
                                     // artworkBorder: BorderRadius.circular(5),
                                     type: ArtworkType.AUDIO,
 
@@ -165,96 +134,44 @@ class _SongsListState extends State<SongsList> {
 
                                     //============No_Thumbnail=============//
                                     nullArtworkWidget: ClipRRect(
-                                      borderRadius:
-                                          const BorderRadius.all(const Radius.circular(40)),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(40)),
                                       child: Image.asset(
                                         'assets/image/logo.png',
                                         fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
-                                  title: Text(
-                                   fullSongs[index].metas.title!,
+                                  title: SizedBox(
+                                    height: 22,
+                                    child: Marquee(
+                                      blankSpace: 10,
+                                      velocity: 10,
+                                      text: fullSongs[index].metas.album!,
+                                      //   maxLines: 1,
+                                      //   overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+
+                                  subtitle: Text(
+                                    fullSongs[index].metas.artist!,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
 
-                                  subtitle: Text(
-                                  fullSongs[index].metas.artist!,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  //                                    )
-                                  trailing: Wrap(
+                                  trailing: Column(
                                     children: [
-                                      InkWell(
-                                          onTap: () {},
-                                          child: const Icon(
-                                            CupertinoIcons.heart_fill,
-                                            color: Colors.white54,
-                                          )),
-                                      const Spacer(),
-                                      InkWell(
-                                        child: const Icon(
-                                          Icons.more_vert,
-                                          color: Colors.white,
-                                        ),
-                                        onTap: () {
-                                          showModalBottomSheet(
-                                              context: context,
-                                              builder: (context) => Container(
-                                                    height: 200,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                            gradient: LinearGradient(
-                                                                begin: Alignment
-                                                                    .topCenter,
-                                                                end: Alignment
-                                                                    .bottomCenter,
-                                                                colors: [
-                                                          Color.fromARGB(
-                                                              255, 8, 216, 199),
-                                                          Color.fromARGB(255,
-                                                              151, 216, 230),
-                                                          Color.fromARGB(
-                                                              255, 5, 129, 112),
-                                                        ])),
-                                                    child: Column(
-                                                      // ignore: prefer_const_literals_to_create_immutables
-                                                      children: [
-                                                        const ListTile(
-                                                          leading: Icon(
-                                                            CupertinoIcons
-                                                                .text_badge_plus,
-                                                            color: Colors.black,
-                                                          ),
-                                                          title: Text(
-                                                              "Add to PlayList"),
-                                                        ),
-                                                        const ListTile(
-                                                          // ignore: unnecessary_const
-                                                          leading: const Icon(
-                                                            CupertinoIcons
-                                                                .tag_solid,
-                                                            color: Colors.black,
-                                                          ),
-                                                          title:
-                                                              Text("Edit name"),
-                                                        ),
-                                                        const ListTile(
-                                                          // ignore: unnecessary_const
-                                                          leading: const Icon(
-                                                            CupertinoIcons
-                                                                .delete_solid,
-                                                            color: Colors.black,
-                                                          ),
-                                                          title: Text("Remove"),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ));
-                                        },
-                                      )
+                                      Wrap(
+                                        children: [
+                                          FavouriteIcon(
+                                              songId: fullSongs[index]
+                                                  .metas
+                                                  .id
+                                                  .toString()),
+                                          const Spacer(),
+                                          SongButton(song: dbSongs[index]),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -265,60 +182,16 @@ class _SongsListState extends State<SongsList> {
                       ),
                     ),
                   ),
-                  itemCount:fullSongs.length,
-                 )
-                ));
-          }),
-    );
+                  itemCount: fullSongs.length,
+                ),
+              );
+            }));
   }
+}
 
-  Future<void> requestStoragePermission() async {
-    bool permissionStatus = await audioQuery.permissionsStatus();
-    if (!permissionStatus) {
-      await audioQuery.permissionsRequest();
-    }
-    setState(() {});
-
-    fetchedSongs = await audioQuery.querySongs();
-
-    for (var element in fetchedSongs) {
-      if (element.fileExtension == "mp3") {
-        allSongs.add(element);
-      }
-    }
-    mappedSongs = allSongs
-        .map(
-          (audio) => Songs(
-              songname: audio.title,
-              artist: audio.artist,
-              songurl: audio.uri,
-              duration: audio.duration,
-              id: audio.id),
-        )
-        .toList();
-
-    await box.put("musics", mappedSongs);
-    dbSongs = box.get("musics") as List<Songs>;
-
-    for (var element in dbSongs) {
-      fullSongs.add(
-        Audio.file(
-          element.songurl.toString(),
-          metas: Metas(
-              title: element.songname,
-              id: element.id.toString(),
-              artist: element.artist),
-        ),
-      );
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-          (route) => false);
-    }
-    setState(() {});
-  }
-
-  Songs findwatchlaterSongs(List<Songs> recently, String id) {
-    return recently
-        .firstWhere((element) => element.songurl.toString().contains(id));
+Future<void> requestStoragePermission() async {
+  bool permissionStatus = await audioQuery.permissionsStatus();
+  if (!permissionStatus) {
+    await audioQuery.permissionsRequest();
   }
 }

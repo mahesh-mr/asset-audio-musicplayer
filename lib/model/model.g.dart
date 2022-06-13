@@ -22,13 +22,13 @@ class SongsAdapter extends TypeAdapter<Songs> {
       duration: fields[2] as int?,
       songname: fields[1] as String?,
       songurl: fields[3] as String?,
-    );
+    album :fields[5] as String?);
   }
 
   @override
   void write(BinaryWriter writer, Songs obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.artist)
       ..writeByte(1)
@@ -38,7 +38,9 @@ class SongsAdapter extends TypeAdapter<Songs> {
       ..writeByte(3)
       ..write(obj.songurl)
       ..writeByte(4)
-      ..write(obj.id);
+      ..write(obj.id)
+      ..writeByte(5)
+      ..write(obj.album);
   }
 
   @override

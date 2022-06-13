@@ -13,8 +13,11 @@ class Songs  {
   String? songurl;
   @HiveField(4)
   int? id;
+  @HiveField(5)
+  String? album;
   Songs(
       {required this.id,
+      required this.album,
       required this.artist,
       required this.duration,
       required this.songname,
@@ -24,10 +27,10 @@ class Songs  {
 String boxname = "songs";
 
 class Songbox {
-  static Box<List>? _box;
+  static Box<List>? box;
 
   static Box<List> getInstance() {
-    return _box ??= Hive.box(boxname);
+    return box ??= Hive.box(boxname);
   }
 }
 
