@@ -51,7 +51,7 @@ class _PlaylisState extends State<Playlis> {
             valueListenable: box.listenable(),
             builder: (context, boxes, _) {
               playlists = box.keys.toList();
-              return playlistSongs.isEmpty
+              return playlists.isEmpty
                   ? const Center(
                       child: const Text("Empty"),
                     )
