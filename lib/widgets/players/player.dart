@@ -209,7 +209,7 @@ class _PlayingsState extends State<Playings> {
                                                   });
                                                 },
                                                 icon: const Icon(
-                                                  Icons.shuffle,
+                                                  Icons.cached,
                                                   color: Colors.white,
                                                 ))
                                             : IconButton(
@@ -221,7 +221,7 @@ class _PlayingsState extends State<Playings> {
                                                   });
                                                 },
                                                 icon: const Icon(
-                                                  Icons.cached,
+                                                  Icons.shuffle,
                                                   color: Colors.white,
                                                 ));
                                       }),

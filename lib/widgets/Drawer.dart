@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:music_player1/dialogs/policy.dart';
 import 'package:share_plus/share_plus.dart';
 
 class NavigationDrawerWidget extends StatefulWidget {
@@ -53,7 +54,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                   leading: const Icon(Icons.share_sharp),
                   title: const Text("Share"),
                   onTap: () {
-                    Share.share("Share the App");
+                    Share.share(
+                        'https://github.com/mahesh-mr/asset-audio-musicplayer');
                   },
                 ),
                 ListTile(
@@ -70,23 +72,42 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                 ListTile(
                   leading: const Icon(Icons.info),
                   title: const Text("About"),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AboutData(),
+                      ),
+                    );
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.privacy_tip_outlined),
-                  title: const Text("Privacy Policy"),
-                  onTap: () {},
+                  title: const Text("Privacy Policy/n "),
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (builder) {
+                          return Policy(mdFilename: 'Privacy_Policy.md');
+                        });
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.verified_user_outlined),
                   title: const Text("Terms & Conditions"),
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (builder) {
+                          return Policy(mdFilename: 'Terms_and_condition.md');
+                        });
+                  },
                 ),
                 const Spacer(),
                 const Text('verssion'),
                 const Padding(
                   padding: EdgeInsets.only(bottom: 10),
-                  child: Text('1.0.0'),
+                  child: Text('1.0.2'),
                 ),
               ]),
             ),
@@ -118,5 +139,32 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         );
       });
     }
+  }
+}
+
+class AboutData extends StatelessWidget {
+  const AboutData({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: ThemeData.from(
+        colorScheme: ColorScheme.fromSwatch(
+          primaryColorDark: const Color.fromARGB(255, 221, 255, 252),
+          cardColor: const Color.fromARGB(255, 221, 255, 252),
+          backgroundColor: const Color.fromARGB(255, 221, 255, 252),
+          accentColor: const Color.fromARGB(255, 221, 255, 252),
+        ),
+      ),
+      child: LicensePage(
+        //applicationName: 'ChoordSIC',
+        applicationVersion: '1.0.2',
+        applicationIcon:
+            Image.asset('assets/image/logo.png', width: 200, height: 200
+                //applicationIcon: ,
+                ),
+        applicationLegalese: "Developed By MAHESH M R",
+      ),
+    );
   }
 }
