@@ -9,6 +9,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 
 // ignore: camel_case_types
 class Miniplayer extends StatefulWidget {
+  
   const Miniplayer({
     Key? key,
   }) : super(key: key);
@@ -23,6 +24,7 @@ final AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
 class _MiniplayerState extends State<Miniplayer> {
   @override
   Widget build(BuildContext context) {
+     final Size size = MediaQuery.of(context).size;
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -75,24 +77,28 @@ class _MiniplayerState extends State<Miniplayer> {
             ),
             //Song_Name
 
-            title: SizedBox(
-              height: 22,
-              child: Marquee(
-                blankSpace: 20,
-                velocity: 20,
-                text: myAudio.metas.title!,
-              ),
-            ),
+            title:  SizedBox(
+                                        height: 30,
+                                        width: 150,
+                                        child: Marquee(
+                                          blankSpace: 20,
+                                          velocity: 20,
+                                          text:  myAudio.metas.title!,
 
-            subtitle: SizedBox(
-              height: 15,
-              child: Marquee(
-                blankSpace: 20,
-                velocity: 20,
-                text: myAudio.metas.artist!.toLowerCase(),
-              ),
-            ),
+                                        )),
+          
+            subtitle:
+            SizedBox(
+                                        height: 30,
+                                        width: 150,
+                                        child: Marquee(
+                                          blankSpace: 20,
+                                          velocity: 20,
+                                          text:  myAudio.metas.artist!.toLowerCase(),
+                  
 
+                                        )),
+          
             trailing: Wrap(
               alignment: WrapAlignment.center,
               children: [
@@ -115,7 +121,7 @@ class _MiniplayerState extends State<Miniplayer> {
                           color: Colors.white,
                         ),
                 ),
-                const Spacer(),
+           
 
                 //Play
                 PlayerBuilder.isPlaying(
@@ -137,8 +143,7 @@ class _MiniplayerState extends State<Miniplayer> {
                   },
                 ),
 
-                //Next
-                const Spacer(),
+            
                 IconButton(
                   onPressed: playing.index == fullSongs.length - 1
                       ? () {}

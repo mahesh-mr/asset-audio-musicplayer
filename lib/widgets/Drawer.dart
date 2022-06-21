@@ -83,7 +83,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.privacy_tip_outlined),
-                  title: const Text("Privacy Policy/n "),
+                  title: const Text("Privacy Policy "),
                   onTap: () {
                     showDialog(
                         context: context,
@@ -157,7 +157,7 @@ class AboutData extends StatelessWidget {
         ),
       ),
       child: LicensePage(
-        //applicationName: 'ChoordSIC',
+        
         applicationVersion: '1.0.2',
         applicationIcon:
             Image.asset('assets/image/logo.png', width: 200, height: 200

@@ -63,7 +63,7 @@ class _SongsListState extends State<SongsList> {
 
         body: FutureBuilder<List<SongModel>>(
             future: audioQuery.querySongs(
-                sortType: SongSortType.ALBUM,
+                sortType: SongSortType.TITLE,
                 orderType: OrderType.ASC_OR_SMALLER,
                 uriType: UriType.EXTERNAL,
                 ignoreCase: true),
@@ -91,7 +91,7 @@ class _SongsListState extends State<SongsList> {
                         child: BackdropFilter(
                           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                           child: Container(
-                            height: 70,
+                            height: 80,
                             decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                     begin: Alignment.topLeft,
@@ -107,8 +107,8 @@ class _SongsListState extends State<SongsList> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
-                                  visualDensity:
-                                      const VisualDensity(vertical: -2),
+                                  // visualDensity:
+                                  //     const VisualDensity(vertical: -2),
                                   onTap: (() async {
                                     final songid =
                                         fullSongs[index].metas.id.toString();
@@ -142,16 +142,20 @@ class _SongsListState extends State<SongsList> {
                                       ),
                                     ),
                                   ),
-                                  title: SizedBox(
-                                    height: 22,
-                                    child: Marquee(
-                                      blankSpace: 10,
-                                      velocity: 10,
-                                      text: fullSongs[index].metas.album!,
+                                  title:     
+                                      SizedBox(
+                                        height: 30,
+                                        width: 150,
+                                        child: Marquee(
+                                          blankSpace: 20,
+                                          velocity: 20,
+                                          text: fullSongs[index].metas.album!,
+
+                                        )),
                                       //   maxLines: 1,
                                       //   overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
+                                    
+                                
 
                                   subtitle: Text(
                                     fullSongs[index].metas.artist!,
@@ -168,7 +172,7 @@ class _SongsListState extends State<SongsList> {
                                                   .metas
                                                   .id
                                                   .toString()),
-                                          const Spacer(),
+                                        
                                           SongButton(song: dbSongs[index]),
                                         ],
                                       ),

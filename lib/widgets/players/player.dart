@@ -50,6 +50,7 @@ class _PlayingsState extends State<Playings> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     dbSongs = box.get("musics") as List<Songs>;
     return Container(
         decoration: const BoxDecoration(
@@ -95,8 +96,8 @@ class _PlayingsState extends State<Playings> {
                 child: Column(
                   children: [
                     Container(
-                      width: 350,
-                      height: 600,
+                      width: size.width,
+                      height: size.height*.8,
                       alignment: Alignment.center,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(0),

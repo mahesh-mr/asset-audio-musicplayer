@@ -40,7 +40,7 @@ class _FavouritedState extends State<Favourited> {
           title: Text(
             'Favourites',
             style: TextStyle(
-                color: Color.fromARGB(255, 128, 16, 16),
+                color:Colors.white,
                 fontWeight: FontWeight.bold),
           ),
           actions: [
