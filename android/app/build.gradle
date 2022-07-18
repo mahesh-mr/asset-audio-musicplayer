@@ -52,7 +52,7 @@ android {
         applicationId "in.mahesh.example.music_player1"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
-        versionCode 4
+        versionCode 5
         versionName flutterVersionName
         multiDexEnabled true
     }

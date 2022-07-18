@@ -1,37 +1,34 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:music_player1/model/model.dart';
-import 'package:music_player1/widgets/splash.dart';
+import 'package:get/get.dart';
+import 'package:music_player1/model/favmodel.dart';
+import 'package:music_player1/model/playmodel.dart';
+import 'package:music_player1/model/songmodel.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:music_player1/view/others/splash.dart';
+
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter(); // initialized hive................................
-  Hive.registerAdapter(SongsAdapter()); //adapter registerd....................
-  await Hive.openBox<List>(boxname); //db box open.............................
-  final box = Songbox.getInstance(); //getinstance.............................
+  await Hive.initFlutter();
 
-//favourites------------------------------------------------------------------
+  Hive.registerAdapter(SongsAdapter());
+  await Hive.openBox<Songs>(boxname);
 
-  List<dynamic> favKeys = box.keys.toList();
-  if (!(favKeys.contains("favourites"))) {
-    List<dynamic> likedsongs = [];
-    await box.put("favourites", likedsongs);
-  }
-//playlist---------------------------------------------------------------------
+  Hive.registerAdapter(favmodelAdapter());
+  await Hive.openBox<favmodel>(favboxname);
 
-  List<dynamic> watchlaterKeys = box.keys.toList();
-  if (!(watchlaterKeys.contains("Recently_Played"))) {
-    List<dynamic> watchlater = [];
-    await box.put("Recently_Played", watchlater);
-  }
+  Hive.registerAdapter(playSongsAdapter());
+  await Hive.openBox<playSongs>(playboxname); 
 
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  runApp(MyApp());
+
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -39,14 +36,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: duplicate_ignore
-    return MaterialApp(
+    return GetMaterialApp(
+      theme: ThemeData(
+        primaryColor: Colors.transparent,
+      ),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.brown),
-
-//  languge---------------------
-
       home: SlpashHome(),
+   
     );
   }
 }
+
+
+
+
